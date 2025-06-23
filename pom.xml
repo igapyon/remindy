@@ -2,22 +2,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>jp.igapyon</groupId>
   <artifactId>remindy</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <name>Remindy</name>
-  <description>Java 1.8 + AWT + Jackson によるCLIリマインダー</description>
-  <url>https://example.com/remindy</url>
+  <description>Java 1.8 + AWT によるCLIリマインダー</description>
+  <url>https://github.com/igapyon/remindy</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.release>8</maven.compiler.release>
     <exec.mainClass>jp.igapyon.remindy.Remindy</exec.mainClass>
   </properties>
 
@@ -50,6 +49,31 @@
         <configuration>
           <mainClass>${exec.mainClass}</mainClass>
         </configuration>
+      </plugin>
+
+      <!-- Maven Assembly Plugin -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>${exec.mainClass}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
