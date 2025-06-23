@@ -8,13 +8,17 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Remindy {
 	private List<String> proverbs;
@@ -30,42 +34,34 @@ public class Remindy {
 			return;
 		}
 
-		System.err.println("Remindy CLI起動: 通知と格言を定期実行します");
+		displayMessage("Remindy", "名言を毎分表示します");
 
+		// 名言ロード。
 		loadProverbs();
 
 		Timer timer = new Timer(true);
 
-		// 通常の休憩通知（25分ごと）
-		long intervalMillis = 25 * 60 * 1000;
-		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				displayMessage("リマインド", "そろそろ休憩しませんか？");
-			}
-		}, 0, intervalMillis);
+		// 次の00.00秒
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime nextMinute = now.plusMinutes(1).withSecond(0).withNano(0);
+		long delay = Duration.between(now, nextMinute).toMillis();
 
-		// マウスジグル（25分ごと）
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				jiggleMouse();
-			}
-		}, 0, intervalMillis);
+				LocalTime currentTime = LocalTime.now();
+				String timeStr = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-		// 格言表示（1分ごと）
-		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
 				if (proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					displayMessage("格言", proverb);
+					displayMessage("格言 (" + timeStr + ")", proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
-			}
-		}, 0, 60 * 1000);
 
-		// 無限ループで維持
+				pikoMouse();
+			}
+		}, delay, 60 * 1000); // 毎分実行
+
 		try {
 			while (true)
 				Thread.sleep(1000);
@@ -103,7 +99,7 @@ public class Remindy {
 		}
 	}
 
-	private static void jiggleMouse() {
+	private static void pikoMouse() {
 		try {
 			Robot robot = new Robot();
 			Point location = MouseInfo.getPointerInfo().getLocation();
@@ -117,7 +113,6 @@ public class Remindy {
 			int newY = y + move[1];
 
 			robot.mouseMove(newX, newY);
-			System.err.printf("マウス移動: (%d, %d) → (%d, %d)%n", x, y, newX, newY);
 		} catch (Exception e) {
 			System.err.println("マウス移動に失敗: " + e.getMessage());
 		}
