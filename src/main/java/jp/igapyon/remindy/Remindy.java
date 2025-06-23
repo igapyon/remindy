@@ -7,7 +7,7 @@ import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -73,8 +73,12 @@ public class Remindy {
 	private void loadProverbs() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			proverbs = mapper.readValue(new File("proverbs.json"), new TypeReference<List<String>>() {
-			});
+
+			try (InputStreamReader reader = new InputStreamReader(
+					getClass().getClassLoader().getResourceAsStream("quotes.json"), "UTF-8∏ØÏ")) {
+				proverbs = mapper.readValue(reader, new TypeReference<List<String>>() {
+				});
+			}
 			System.err.println("格言を " + proverbs.size() + " 件読み込みました。");
 		} catch (Exception e) {
 			System.err.println("格言の読み込みに失敗しました: " + e.getMessage());
