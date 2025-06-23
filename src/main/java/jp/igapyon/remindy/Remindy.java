@@ -75,7 +75,7 @@ public class Remindy {
 			ObjectMapper mapper = new ObjectMapper();
 
 			try (InputStreamReader reader = new InputStreamReader(
-					getClass().getClassLoader().getResourceAsStream("quotes.json"), "UTF-8∏ØÏ")) {
+					getClass().getClassLoader().getResourceAsStream("proverbs.json"), "UTF-8")) {
 				proverbs = mapper.readValue(reader, new TypeReference<List<String>>() {
 				});
 			}
