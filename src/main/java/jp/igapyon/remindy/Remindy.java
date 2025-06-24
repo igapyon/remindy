@@ -91,14 +91,15 @@ public class Remindy {
 
 	private static void displayMessage(String title, String message) {
 		try {
+			// 指定はするが利用されない。。。
 			Image icon = Toolkit.getDefaultToolkit()
-					.getImage(Remindy.class.getClassLoader().getResource("images/remindy_icon32.png"));
+					.getImage(Remindy.class.getClassLoader().getResource("images/remindy_icon_32x32.png"));
 			TrayIcon trayIcon = new TrayIcon(icon, "Remindy");
 			trayIcon.setImageAutoSize(true);
 
 			SystemTray.getSystemTray().add(trayIcon);
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("通知: " + title + ": " + message);
+			System.err.println("⏰通知: " + title + ": " + message);
 
 			Thread.sleep(5000);
 			SystemTray.getSystemTray().remove(trayIcon);
