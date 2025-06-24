@@ -5,8 +5,8 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.SystemTray;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.image.BufferedImage;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -91,8 +91,9 @@ public class Remindy {
 
 	private static void displayMessage(String title, String message) {
 		try {
-			Image image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-			TrayIcon trayIcon = new TrayIcon(image, "Remindy");
+			Image icon = Toolkit.getDefaultToolkit()
+					.getImage(Remindy.class.getClassLoader().getResource("images/remindy_icon32.png"));
+			TrayIcon trayIcon = new TrayIcon(icon, "Remindy");
 			trayIcon.setImageAutoSize(true);
 
 			SystemTray.getSystemTray().add(trayIcon);
