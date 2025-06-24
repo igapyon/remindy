@@ -62,9 +62,8 @@ public class Remindy {
 				// 時間指定リマインド優先
 				for (Reminder r : reminders) {
 					if (r.time.equals(timeStr)) {
-						displayMessage("⏰リマインド⏰ - " + timeStr, r.message);
+						displayMessage("⏰⏰リマインド⏰⏰ - " + timeStr, r.message);
 						pikoMouse();
-						return;
 					}
 				}
 
