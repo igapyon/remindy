@@ -5,8 +5,8 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.SystemTray;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
-import java.awt.image.BufferedImage;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -52,19 +52,22 @@ public class Remindy {
 				LocalTime currentTime = LocalTime.now();
 				String timeStr = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-				if (proverbs != null && !proverbs.isEmpty()) {
+				int minute = currentTime.getMinute();
+				if (minute == 0 || minute == 30) {
+					displayMessage("⏰⏰⏰ぴったり時間⏰⏰⏰ - " + timeStr, "今はちょうどの時間です。カレンダー確認してください。");
+				} else if (proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					displayMessage("格言 (" + timeStr + ")", proverb);
+					displayMessage("⏰格言⏰ - " + timeStr, proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
-
-				pikoMouse();
+				pikoMouse(); // マウス移動
 			}
 		}, delay, 60 * 1000); // 毎分実行
 
 		try {
-			while (true)
+			while (true) {
 				Thread.sleep(1000);
+			}
 		} catch (InterruptedException e) {
 			System.err.println("割り込みにより終了します。");
 		}
@@ -88,13 +91,15 @@ public class Remindy {
 
 	private static void displayMessage(String title, String message) {
 		try {
-			Image image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-			TrayIcon trayIcon = new TrayIcon(image, "Remindy");
+			// 指定はするが利用されない。。。
+			Image icon = Toolkit.getDefaultToolkit()
+					.getImage(Remindy.class.getClassLoader().getResource("images/remindy_icon_32x32.png"));
+			TrayIcon trayIcon = new TrayIcon(icon, "Remindy");
 			trayIcon.setImageAutoSize(true);
 
 			SystemTray.getSystemTray().add(trayIcon);
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("通知: 【" + title + "】" + message);
+			System.err.println("通知: " + title + ": " + message);
 
 			Thread.sleep(5000);
 			SystemTray.getSystemTray().remove(trayIcon);
