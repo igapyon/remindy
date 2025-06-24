@@ -54,10 +54,10 @@ public class Remindy {
 
 				int minute = currentTime.getMinute();
 				if (minute == 0 || minute == 30) {
-					displayMessage("☆☆☆ぴったり時間☆☆☆ - " + timeStr, "今はちょうどの時間です。カレンダー確認してください。");
+					displayMessage("⏰⏰⏰ぴったり時間⏰⏰⏰ - " + timeStr, "今はちょうどの時間です。カレンダー確認してください。");
 				} else if (proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					displayMessage("格言 - " + timeStr, proverb);
+					displayMessage("⏰格言⏰ - " + timeStr, proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
 				pikoMouse(); // マウス移動
@@ -99,7 +99,7 @@ public class Remindy {
 
 			SystemTray.getSystemTray().add(trayIcon);
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("⏰通知: " + title + ": " + message);
+			System.err.println("通知: " + title + ": " + message);
 
 			Thread.sleep(5000);
 			SystemTray.getSystemTray().remove(trayIcon);
