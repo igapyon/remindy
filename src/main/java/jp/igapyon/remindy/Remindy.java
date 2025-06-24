@@ -52,13 +52,15 @@ public class Remindy {
 				LocalTime currentTime = LocalTime.now();
 				String timeStr = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-				if (proverbs != null && !proverbs.isEmpty()) {
+				int minute = currentTime.getMinute();
+				if (minute == 0 || minute == 30) {
+					displayMessage("☆☆☆ぴったり時間☆☆☆ - " + timeStr, "今はちょうどの時間です。カレンダー確認してください。");
+				} else if (proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
 					displayMessage("格言 - " + timeStr, proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
-
-				pikoMouse();
+				pikoMouse(); // マウス移動
 			}
 		}, delay, 60 * 1000); // 毎分実行
 
