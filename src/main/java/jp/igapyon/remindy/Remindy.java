@@ -22,6 +22,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Remindy {
+	public static final String VERSION = "20250625a";
+
 	private List<String> proverbs;
 	private List<Reminder> reminders;
 	private int proverbIndex = 0;
@@ -40,7 +42,7 @@ public class Remindy {
 		// TrayIcon を一度だけ登録（ちらつき防止）
 		setupTrayIcon();
 
-		displayMessage("Remindy", "名言とリマインドを毎分通知します");
+		displayMessage("Remindy (" + VERSION + ")", "名言とリマインドを毎分通知します");
 
 		loadProverbs();
 		loadReminders();
