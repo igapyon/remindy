@@ -54,7 +54,7 @@ public class Remindy {
 
 				if (proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					displayMessage("格言 (" + timeStr + ")", proverb);
+					displayMessage("格言 - " + timeStr, proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
 
@@ -63,8 +63,9 @@ public class Remindy {
 		}, delay, 60 * 1000); // 毎分実行
 
 		try {
-			while (true)
+			while (true) {
 				Thread.sleep(1000);
+			}
 		} catch (InterruptedException e) {
 			System.err.println("割り込みにより終了します。");
 		}
@@ -94,7 +95,7 @@ public class Remindy {
 
 			SystemTray.getSystemTray().add(trayIcon);
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("通知: 【" + title + "】" + message);
+			System.err.println("通知: " + title + ": " + message);
 
 			Thread.sleep(5000);
 			SystemTray.getSystemTray().remove(trayIcon);
