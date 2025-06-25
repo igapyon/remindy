@@ -106,8 +106,18 @@ public class Remindy {
 				LocalTime rt = LocalTime.parse(r.time, DateTimeFormatter.ofPattern("HH:mm"));
 				if (rt.isAfter(now)) {
 					long minutes = Duration.between(now, rt).toMinutes();
-					String label = String.format("%s（%d分後）%s", r.time, minutes, r.message);
-					list.add(label);
+
+					String timeLabel;
+					if (minutes >= 60) {
+						long hours = minutes / 60;
+						timeLabel = String.format("%s（%d時間後）%s", r.time, hours, r.message);
+					} else {
+						timeLabel = String.format("%s（%d分後）%s", r.time, minutes, r.message);
+					}
+
+					list.add(timeLabel);
+					if (list.size() >= 2)
+						break;
 				}
 			}
 		} catch (Exception e) {
@@ -161,7 +171,7 @@ public class Remindy {
 	private void displayMessage(String title, String message) {
 		if (trayIcon != null) {
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("通知: " + title + ": " + message);
+			System.err.println("通知: " + title + "\n" + message);
 		}
 	}
 
