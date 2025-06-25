@@ -22,6 +22,8 @@ import java.util.TimerTask;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.igapyon.remindy.vo.Reminder;
+
 public class Remindy {
 	public static final String VERSION = "20250625b";
 	private List<String> proverbs;

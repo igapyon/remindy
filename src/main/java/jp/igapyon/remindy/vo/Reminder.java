@@ -1,4 +1,4 @@
-package jp.igapyon.remindy;
+package jp.igapyon.remindy.vo;
 
 public class Reminder {
 	public String time;
