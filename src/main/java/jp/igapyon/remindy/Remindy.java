@@ -73,14 +73,25 @@ public class Remindy {
 					}
 				}
 
-				// 今後の予定（最大2件）
+				boolean isFirstLine = true;
+				// 今後の予定
 				List<String> upcoming = buildUpcomingMessages(timeStr);
 				for (int i = 0; i < upcoming.size(); i++) {
-					msg.append("🗓 ").append(upcoming.get(i)).append("\n");
+					if (isFirstLine) {
+						isFirstLine = false;
+					} else {
+						msg.append("\n");
+					}
+					msg.append("🗓 ").append(upcoming.get(i));
 				}
 
 				// 格言（フォールバック）
 				if (msg.length() == 0 && proverbs != null && !proverbs.isEmpty()) {
+					if (isFirstLine) {
+						isFirstLine = false;
+					} else {
+						msg.append("\n");
+					}
 					String proverb = proverbs.get(proverbIndex);
 					msg.append("💡 ").append(proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
