@@ -74,13 +74,13 @@ public class Remindy {
 				// 今後の予定（最大2件）
 				List<String> upcoming = buildUpcomingMessages(timeStr);
 				for (int i = 0; i < upcoming.size(); i++) {
-					msg.append("🗓 次: ").append(upcoming.get(i)).append("\n");
+					msg.append("🗓 ").append(upcoming.get(i)).append("\n");
 				}
 
 				// 格言（フォールバック）
 				if (msg.length() == 0 && proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					msg.append("💡 格言: ").append(proverb);
+					msg.append("💡 ").append(proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
 
