@@ -22,7 +22,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Remindy {
-	public static final String VERSION = "20250625a";
+	public static final String VERSION = "20250625b";
 
 	private List<String> proverbs;
 	private List<Reminder> reminders;
@@ -39,9 +39,7 @@ public class Remindy {
 			return;
 		}
 
-		// TrayIcon を一度だけ登録（ちらつき防止）
 		setupTrayIcon();
-
 		displayMessage("Remindy (" + VERSION + ")", "名言とリマインドを毎分通知します");
 
 		loadProverbs();
@@ -49,7 +47,6 @@ public class Remindy {
 
 		Timer timer = new Timer(true);
 
-		// 次の 00 秒までの遅延を計算
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime nextMinute = now.plusMinutes(1).withSecond(0).withNano(0);
 		long delay = Duration.between(now, nextMinute).toMillis();
@@ -61,23 +58,33 @@ public class Remindy {
 				String timeStr = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 				int minute = currentTime.getMinute();
 
-				// 時間指定リマインド優先
+				StringBuilder message = new StringBuilder();
+				message.append("🕒 ").append(timeStr).append("\n\n");
+
+				// ① リマインド
 				for (Reminder r : reminders) {
 					if (r.time.equals(timeStr)) {
-						displayMessage("⏰⏰リマインド⏰⏰ - " + timeStr, r.message);
-						pikoMouse();
+						message.append("⏰⏰リマインド⏰⏰ - ").append(timeStr).append("\n").append(r.message).append("\n\n");
 					}
 				}
 
+				// ② ぴったり時間
 				if (minute == 0 || minute == 30) {
-					displayMessage("⏰⏰⏰ぴったり時間⏰⏰⏰ - " + timeStr, "今はちょうどの時間です。カレンダー確認してください。");
-				} else if (proverbs != null && !proverbs.isEmpty()) {
+					message.append("⏰⏰⏰ぴったり時間⏰⏰⏰ - ").append(timeStr).append("\n今はちょうどの時間です。カレンダー確認してください。\n\n");
+				}
+
+				// ③ 格言
+				if (proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					displayMessage("⏰格言⏰ - " + timeStr, proverb);
+					message.append("⏰格言⏰ - ").append(timeStr).append("\n").append(proverb).append("\n\n");
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
 
-				pikoMouse(); // マウス1ピクセル移動
+				// ④ 今後の予定（毎回表示）
+				message.append(buildUpcomingRemindersMessage(currentTime));
+
+				displayMessage("Remindy - " + timeStr, message.toString().trim());
+				pikoMouse();
 			}
 		}, delay, 60 * 1000);
 
@@ -111,7 +118,7 @@ public class Remindy {
 			}
 			System.err.println("格言を " + proverbs.size() + " 件読み込みました。");
 		} catch (Exception e) {
-			System.err.println("格言の読み込みに失敗: " + e.getMessage());
+			System.err.println("格言の読み込みに失敗しました: " + e.getMessage());
 			proverbs = Collections.emptyList();
 		}
 	}
@@ -131,6 +138,29 @@ public class Remindy {
 		}
 	}
 
+	private String buildUpcomingRemindersMessage(LocalTime now) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("🗓 今後の予定:\n");
+
+		for (Reminder r : reminders) {
+			try {
+				LocalTime rt = LocalTime.parse(r.time, DateTimeFormatter.ofPattern("HH:mm"));
+				if (rt.isAfter(now)) {
+					long minutes = Duration.between(now, rt).toMinutes();
+					String suffix = (minutes >= 60)
+							? (minutes / 60) + "時間" + (minutes % 60 != 0 ? (minutes % 60) + "分後" : "後")
+							: minutes + "分後";
+					sb.append("・").append(r.time).append("（").append(suffix).append("）").append(" ").append(r.message)
+							.append("\n");
+				}
+			} catch (Exception e) {
+				// 無視（形式不正）
+			}
+		}
+
+		return sb.toString();
+	}
+
 	private void displayMessage(String title, String message) {
 		if (trayIcon != null) {
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
@@ -144,10 +174,8 @@ public class Remindy {
 			Point location = MouseInfo.getPointerInfo().getLocation();
 			int x = (int) location.getX();
 			int y = (int) location.getY();
-
 			int[][] directions = { { 1, 0 }, { -1, 0 }, { 0, -1 }, { 0, 1 } };
 			int[] move = directions[new Random().nextInt(directions.length)];
-
 			robot.mouseMove(x + move[0], y + move[1]);
 		} catch (Exception e) {
 			System.err.println("マウス移動に失敗: " + e.getMessage());
