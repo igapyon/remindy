@@ -49,7 +49,7 @@ public class Remindy {
 
 		loadProverbs();
 		loadReminders();
-		
+
 		runNotificationCycle();
 
 		Timer timer = new Timer(true);
@@ -106,8 +106,8 @@ public class Remindy {
 				long minutes = Duration.between(now, rTime).toMinutes();
 				String future;
 				if (minutes >= 60) {
-					long hours = (minutes + 30) / 60; // 切り上げ
-					future = String.format("%s（%d時間後）%s", r.time, hours, r.message);
+					double hours = Math.ceil(minutes / 6.0) / 10.0;
+					future = String.format("%s（%.1f時間後）%s", r.time, hours, r.message);
 				} else {
 					future = String.format("%s（%d分後）%s", r.time, minutes, r.message);
 				}
