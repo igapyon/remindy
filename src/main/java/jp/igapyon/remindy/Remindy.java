@@ -83,7 +83,7 @@ public class Remindy {
 	private String buildTitle(LocalTime now) {
 		String title = "⏰ " + now.format(TIME_FORMATTER);
 		if (now.getMinute() == 0 || now.getMinute() == 30) {
-			title += " - ピッタリ時間";
+			title += " - ⏰⏰⏰ピッタリ時間⏰⏰⏰";
 		}
 		return title;
 	}
