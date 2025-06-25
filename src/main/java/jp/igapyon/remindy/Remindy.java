@@ -49,6 +49,8 @@ public class Remindy {
 
 		loadProverbs();
 		loadReminders();
+		
+		runNotificationCycle();
 
 		Timer timer = new Timer(true);
 		LocalDateTime now = LocalDateTime.now();
