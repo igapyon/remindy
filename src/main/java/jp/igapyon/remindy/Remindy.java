@@ -85,8 +85,8 @@ public class Remindy {
 					msg.append("🗓 ").append(upcoming.get(i));
 				}
 
-				// 格言（フォールバック）
-				if (msg.length() == 0 && proverbs != null && !proverbs.isEmpty()) {
+				// 格言
+				if (proverbs != null && !proverbs.isEmpty()) {
 					if (isFirstLine) {
 						isFirstLine = false;
 					} else {
