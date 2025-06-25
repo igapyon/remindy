@@ -108,8 +108,6 @@ public class Remindy {
 					long minutes = Duration.between(now, rt).toMinutes();
 					String label = String.format("%s（%d分後）%s", r.time, minutes, r.message);
 					list.add(label);
-					if (list.size() >= 2)
-						break;
 				}
 			}
 		} catch (Exception e) {
