@@ -95,7 +95,7 @@ public class Remindy {
 		// リマインド
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add("🔔 リマインド: " + r.message);
+				lines.add("🔔リマインド🔔 " + r.message);
 			}
 		}
 
