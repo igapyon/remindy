@@ -116,8 +116,6 @@ public class Remindy {
 					}
 
 					list.add(timeLabel);
-					if (list.size() >= 2)
-						break;
 				}
 			}
 		} catch (Exception e) {
