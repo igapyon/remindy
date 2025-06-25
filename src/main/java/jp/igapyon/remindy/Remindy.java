@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Remindy {
 	public static final String VERSION = "20250625b";
-
 	private List<String> proverbs;
 	private List<Reminder> reminders;
 	private int proverbIndex = 0;
@@ -46,7 +46,6 @@ public class Remindy {
 		loadReminders();
 
 		Timer timer = new Timer(true);
-
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime nextMinute = now.plusMinutes(1).withSecond(0).withNano(0);
 		long delay = Duration.between(now, nextMinute).toMillis();
@@ -58,32 +57,34 @@ public class Remindy {
 				String timeStr = currentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 				int minute = currentTime.getMinute();
 
-				StringBuilder message = new StringBuilder();
-				message.append("🕒 ").append(timeStr).append("\n\n");
+				String title = "⏰ " + timeStr;
+				if (minute == 0 || minute == 30) {
+					title += " - ピッタリ時間";
+				}
 
-				// ① リマインド
+				StringBuilder msg = new StringBuilder();
+
+				// リマインド
 				for (Reminder r : reminders) {
 					if (r.time.equals(timeStr)) {
-						message.append("⏰⏰リマインド⏰⏰ - ").append(timeStr).append("\n").append(r.message).append("\n\n");
+						msg.append("🔔 リマインド: ").append(r.message).append("\n");
 					}
 				}
 
-				// ② ぴったり時間
-				if (minute == 0 || minute == 30) {
-					message.append("⏰⏰⏰ぴったり時間⏰⏰⏰ - ").append(timeStr).append("\n今はちょうどの時間です。カレンダー確認してください。\n\n");
+				// 今後の予定（最大2件）
+				List<String> upcoming = buildUpcomingMessages(timeStr);
+				for (int i = 0; i < upcoming.size(); i++) {
+					msg.append("🗓 次: ").append(upcoming.get(i)).append("\n");
 				}
 
-				// ③ 格言
-				if (proverbs != null && !proverbs.isEmpty()) {
+				// 格言（フォールバック）
+				if (msg.length() == 0 && proverbs != null && !proverbs.isEmpty()) {
 					String proverb = proverbs.get(proverbIndex);
-					message.append("⏰格言⏰ - ").append(timeStr).append("\n").append(proverb).append("\n\n");
+					msg.append("💡 格言: ").append(proverb);
 					proverbIndex = (proverbIndex + 1) % proverbs.size();
 				}
 
-				// ④ 今後の予定（毎回表示）
-				message.append(buildUpcomingRemindersMessage(currentTime));
-
-				displayMessage("Remindy - " + timeStr, message.toString().trim());
+				displayMessage(title, msg.toString().trim());
 				pikoMouse();
 			}
 		}, delay, 60 * 1000);
@@ -94,6 +95,27 @@ public class Remindy {
 		} catch (InterruptedException e) {
 			System.err.println("割り込みにより終了します。");
 		}
+	}
+
+	private List<String> buildUpcomingMessages(String nowStr) {
+		List<String> list = new ArrayList<String>();
+		try {
+			LocalTime now = LocalTime.parse(nowStr, DateTimeFormatter.ofPattern("HH:mm"));
+			for (int i = 0; i < reminders.size(); i++) {
+				Reminder r = reminders.get(i);
+				LocalTime rt = LocalTime.parse(r.time, DateTimeFormatter.ofPattern("HH:mm"));
+				if (rt.isAfter(now)) {
+					long minutes = Duration.between(now, rt).toMinutes();
+					String label = String.format("%s（%d分後）%s", r.time, minutes, r.message);
+					list.add(label);
+					if (list.size() >= 2)
+						break;
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("予定取得でエラー: " + e.getMessage());
+		}
+		return list;
 	}
 
 	private void setupTrayIcon() {
@@ -111,14 +133,14 @@ public class Remindy {
 	private void loadProverbs() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			try (InputStreamReader reader = new InputStreamReader(
-					getClass().getClassLoader().getResourceAsStream("proverbs.json"), "UTF-8")) {
-				proverbs = mapper.readValue(reader, new TypeReference<List<String>>() {
-				});
-			}
+			InputStreamReader reader = new InputStreamReader(
+					getClass().getClassLoader().getResourceAsStream("proverbs.json"), "UTF-8");
+			proverbs = mapper.readValue(reader, new TypeReference<List<String>>() {
+			});
+			reader.close();
 			System.err.println("格言を " + proverbs.size() + " 件読み込みました。");
 		} catch (Exception e) {
-			System.err.println("格言の読み込みに失敗しました: " + e.getMessage());
+			System.err.println("格言の読み込みに失敗: " + e.getMessage());
 			proverbs = Collections.emptyList();
 		}
 	}
@@ -126,39 +148,16 @@ public class Remindy {
 	private void loadReminders() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			try (InputStreamReader reader = new InputStreamReader(
-					getClass().getClassLoader().getResourceAsStream("reminders.json"), "UTF-8")) {
-				reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
-				});
-			}
+			InputStreamReader reader = new InputStreamReader(
+					getClass().getClassLoader().getResourceAsStream("reminders.json"), "UTF-8");
+			reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
+			});
+			reader.close();
 			System.err.println("リマインドを " + reminders.size() + " 件読み込みました。");
 		} catch (Exception e) {
 			System.err.println("reminders.json の読み込みに失敗: " + e.getMessage());
 			reminders = Collections.emptyList();
 		}
-	}
-
-	private String buildUpcomingRemindersMessage(LocalTime now) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("🗓 今後の予定:\n");
-
-		for (Reminder r : reminders) {
-			try {
-				LocalTime rt = LocalTime.parse(r.time, DateTimeFormatter.ofPattern("HH:mm"));
-				if (rt.isAfter(now)) {
-					long minutes = Duration.between(now, rt).toMinutes();
-					String suffix = (minutes >= 60)
-							? (minutes / 60) + "時間" + (minutes % 60 != 0 ? (minutes % 60) + "分後" : "後")
-							: minutes + "分後";
-					sb.append("・").append(r.time).append("（").append(suffix).append("）").append(" ").append(r.message)
-							.append("\n");
-				}
-			} catch (Exception e) {
-				// 無視（形式不正）
-			}
-		}
-
-		return sb.toString();
 	}
 
 	private void displayMessage(String title, String message) {
