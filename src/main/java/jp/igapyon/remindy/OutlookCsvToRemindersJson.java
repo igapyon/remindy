@@ -31,7 +31,7 @@ public class OutlookCsvToRemindersJson {
 		List<Reminder> reminders = new ArrayList<>();
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/M/d");
-		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("H:mm"); // ← Outlookの時刻用
+		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("H:mm:ss"); // ← Outlookの時刻用
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm"); // ← 出力用
 
 		try (Reader in = new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8)) {
@@ -41,7 +41,6 @@ public class OutlookCsvToRemindersJson {
 				String subject = record.get(0);
 				String startDateStr = record.get(1);
 				String startTimeStr = record.get(2);
-				String body = record.get("内容");
 
 				LocalDate startDate = LocalDate.parse(startDateStr, dateFormatter);
 				if (startDate.equals(today)) {
@@ -49,7 +48,7 @@ public class OutlookCsvToRemindersJson {
 					LocalTime parsedTime = LocalTime.parse(startTimeStr, timeParser);
 					reminder.time = parsedTime.format(timeFormatter); // ← ここで 0埋め＆秒なし
 
-					reminder.message = subject + ": " + body;
+					reminder.message = subject;
 					reminders.add(reminder);
 				}
 			}
