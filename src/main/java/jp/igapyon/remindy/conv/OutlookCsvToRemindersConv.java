@@ -1,4 +1,4 @@
-package jp.igapyon.remindy;
+package jp.igapyon.remindy.conv;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import jp.igapyon.remindy.vo.Reminder;
 
-public class OutlookCsvToRemindersJson {
+public class OutlookCsvToRemindersConv {
 	public static void main(String[] args) throws Exception {
 		File csvFile = new File("./src/main/resources/input/outlook-calendar.csv");
 		File jsonFile = new File("./src/main/resources/reminders.json");
