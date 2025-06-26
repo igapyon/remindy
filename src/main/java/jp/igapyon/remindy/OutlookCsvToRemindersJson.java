@@ -24,7 +24,7 @@ import jp.igapyon.remindy.vo.Reminder;
 
 public class OutlookCsvToRemindersJson {
 	public static void main(String[] args) throws Exception {
-		File csvFile = new File("./src/main/resources/input/outlook.csv");
+		File csvFile = new File("./src/main/resources/input/outlook-calendar.csv");
 		File jsonFile = new File("./src/main/resources/reminders.json");
 
 		List<Reminder> reminders = new ArrayList<>();
