@@ -82,7 +82,7 @@ public class Remindy {
 
 	private String buildTitle(LocalTime now) {
 		if (now.getMinute() == 0 || now.getMinute() == 30) {
-			return "⏰⏰⏰ピッタリ時間⏰⏰⏰";
+			return "⏰ピッタリ時間⏰";
 		}
 		return null;
 	}
@@ -94,7 +94,7 @@ public class Remindy {
 		// リマインド
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add("🔔リマインド🔔 " + truncate10(r.message));
+				lines.add("🔔時間🔔 " + truncate10(r.message));
 			}
 		}
 
@@ -175,7 +175,7 @@ public class Remindy {
 	private void displayMessage(String title, String message) {
 		if (trayIcon != null) {
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("## 通知: " + (title == null ? "" : title) + "\n" + message);
+			System.err.println("【通知】 " + (title == null ? "" : title) + "\n" + message);
 		}
 	}
 
