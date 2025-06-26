@@ -106,7 +106,7 @@ public class Remindy {
 				long minutes = Duration.between(now, rTime).toMinutes();
 				String future;
 				if (minutes >= 60) {
-					double hours = Math.ceil(minutes / 6.0) / 10.0;
+					double hours = Math.floor(minutes / 6.0) / 10.0;
 					future = String.format("%s（%.1f時間後）%s", r.time, hours, truncate10(r.message));
 				} else {
 					future = String.format("%s（%d分後）%s", r.time, minutes, truncate10(r.message));
