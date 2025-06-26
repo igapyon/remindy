@@ -175,7 +175,7 @@ public class Remindy {
 	private void displayMessage(String title, String message) {
 		if (trayIcon != null) {
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("## 通知: " + title + "\n" + message);
+			System.err.println("## 通知: " + (title == null ? "" : title) + "\n" + message);
 		}
 	}
 
