@@ -95,7 +95,7 @@ public class Remindy {
 		// リマインド
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add("🔔リマインド🔔 " + r.message);
+				lines.add("🔔リマインド🔔 " + truncate10(r.message));
 			}
 		}
 
@@ -107,9 +107,9 @@ public class Remindy {
 				String future;
 				if (minutes >= 60) {
 					double hours = Math.ceil(minutes / 6.0) / 10.0;
-					future = String.format("%s（%.1f時間後）%s", r.time, hours, r.message);
+					future = String.format("%s（%.1f時間後）%s", r.time, hours, truncate10(r.message));
 				} else {
-					future = String.format("%s（%d分後）%s", r.time, minutes, r.message);
+					future = String.format("%s（%d分後）%s", r.time, minutes, truncate10(r.message));
 				}
 				lines.add("🗓 " + future);
 			}
@@ -191,4 +191,14 @@ public class Remindy {
 			System.err.println("マウス移動に失敗: " + e.getMessage());
 		}
 	}
+
+	private static String truncate10(String msg) {
+		final int maxLength = 10;
+		if (msg == null)
+			return "";
+		if (msg.length() <= maxLength)
+			return msg;
+		return msg.substring(0, maxLength);
+	}
+
 }
