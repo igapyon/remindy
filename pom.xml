@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>jp.igapyon</groupId>
 	<artifactId>remindy</artifactId>
-	<version>1.20250625.1</version>
+	<version>1.20250626.1</version>
 	<packaging>jar</packaging>
 
 	<name>Remindy</name>
