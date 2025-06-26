@@ -159,6 +159,15 @@ public class Remindy {
 			});
 			reader.close();
 			System.err.println("リマインドを " + reminders.size() + " 件読み込みました。");
+
+			// 時刻順ソートを追加
+			Collections.sort(reminders, new java.util.Comparator<Reminder>() {
+				public int compare(Reminder r1, Reminder r2) {
+					LocalTime t1 = LocalTime.parse(r1.time, TIME_FORMATTER);
+					LocalTime t2 = LocalTime.parse(r2.time, TIME_FORMATTER);
+					return t1.compareTo(t2);
+				}
+			});
 		} catch (Exception e) {
 			System.err.println("reminders.json の読み込みに失敗: " + e.getMessage());
 		}
