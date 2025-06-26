@@ -81,11 +81,10 @@ public class Remindy {
 	}
 
 	private String buildTitle(LocalTime now) {
-		String title = "⏰ " + now.format(TIME_FORMATTER);
 		if (now.getMinute() == 0 || now.getMinute() == 30) {
-			title += " - ⏰⏰⏰ピッタリ時間⏰⏰⏰";
+			return "⏰⏰⏰ピッタリ時間⏰⏰⏰";
 		}
-		return title;
+		return null;
 	}
 
 	private String buildMessage(LocalTime now) {
@@ -176,7 +175,7 @@ public class Remindy {
 	private void displayMessage(String title, String message) {
 		if (trayIcon != null) {
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("通知: " + title + "\n" + message);
+			System.err.println("## 通知: " + title + "\n" + message);
 		}
 	}
 
