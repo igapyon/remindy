@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,26 +25,30 @@ import jp.igapyon.remindy.vo.Reminder;
 
 public class OutlookCsvToRemindersJson {
 	public static void main(String[] args) throws Exception {
-		File csvFile = new File("./src/main/resources/input/outlook-calendar.csv");
-		File jsonFile = new File("./src/main/resources/reminders.json");
+		File csvFile = new File("outlook_calendar.csv");
+		File jsonFile = new File("reminders.json");
 
 		List<Reminder> reminders = new ArrayList<>();
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/M/d");
+		DateTimeFormatter timeParser = DateTimeFormatter.ofPattern("H:mm"); // ← Outlookの時刻用
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm"); // ← 出力用
 
 		try (Reader in = new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8)) {
 			CSVParser parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().withTrim().parse(in);
 
 			for (CSVRecord record : parser) {
-				String subject = record.get("件名");
-				String startDateStr = record.get("開始日");
-				String startTime = record.get("開始日時");
+				String subject = record.get(0);
+				String startDateStr = record.get(1);
+				String startTimeStr = record.get(2);
 				String body = record.get("内容");
 
 				LocalDate startDate = LocalDate.parse(startDateStr, dateFormatter);
 				if (startDate.equals(today)) {
 					Reminder reminder = new Reminder();
-					reminder.time = startTime;
+					LocalTime parsedTime = LocalTime.parse(startTimeStr, timeParser);
+					reminder.time = parsedTime.format(timeFormatter); // ← ここで 0埋め＆秒なし
+
 					reminder.message = subject + ": " + body;
 					reminders.add(reminder);
 				}
