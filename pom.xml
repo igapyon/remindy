@@ -101,6 +101,26 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<!-- Maven License Plugin -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>2.0.0</version>
+				<configuration>
+					<outputDirectory>${project.build.directory}/generated-resources/licenses</outputDirectory>
+					<excludedScopes>test,provided</excludedScopes>
+				</configuration>
+				<executions>
+					<execution>
+						<id>aggregate-licenses</id>
+						<goals>
+							<goal>aggregate-add-third-party</goal>
+						</goals>
+						<phase>generate-resources</phase>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
