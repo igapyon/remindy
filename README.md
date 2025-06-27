@@ -85,3 +85,8 @@ java -jar target/remindy-*-jar-with-dependencies.jar
 ```sh
 mvn package
 ```
+
+## ライセンス
+
+このプロジェクトは Apache License, Version 2.0 の下でライセンスされています。詳細については、プロジェクトルートにある `LICENSE` ファイルを参照してください。
+
