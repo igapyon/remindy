@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 Toshiki Iga
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package jp.igapyon.remindy;
 
 import java.awt.Image;
@@ -81,11 +96,10 @@ public class Remindy {
 	}
 
 	private String buildTitle(LocalTime now) {
-		String title = "⏰ " + now.format(TIME_FORMATTER);
 		if (now.getMinute() == 0 || now.getMinute() == 30) {
-			title += " - ⏰⏰⏰ピッタリ時間⏰⏰⏰";
+			return "⏰ピッタリ時間⏰";
 		}
-		return title;
+		return null;
 	}
 
 	private String buildMessage(LocalTime now) {
@@ -95,7 +109,7 @@ public class Remindy {
 		// リマインド
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add("🔔リマインド🔔 " + r.message);
+				lines.add("🔔時間🔔 " + truncate10(r.message));
 			}
 		}
 
@@ -105,11 +119,11 @@ public class Remindy {
 			if (rTime.isAfter(now)) {
 				long minutes = Duration.between(now, rTime).toMinutes();
 				String future;
-				if (minutes >= 60) {
-					double hours = Math.ceil(minutes / 6.0) / 10.0;
-					future = String.format("%s（%.1f時間後）%s", r.time, hours, r.message);
+				if (minutes > 60) {
+					double hours = Math.floor(minutes / 6.0) / 10.0;
+					future = String.format("%s（%.1f時間後）%s", r.time, hours, truncate10(r.message));
 				} else {
-					future = String.format("%s（%d分後）%s", r.time, minutes, r.message);
+					future = String.format("%s（%d分後）%s", r.time, minutes, truncate10(r.message));
 				}
 				lines.add("🗓 " + future);
 			}
@@ -176,7 +190,7 @@ public class Remindy {
 	private void displayMessage(String title, String message) {
 		if (trayIcon != null) {
 			trayIcon.displayMessage(title, message, TrayIcon.MessageType.INFO);
-			System.err.println("通知: " + title + "\n" + message);
+			System.err.println("【通知】 " + (title == null ? "" : title) + "\n" + message);
 		}
 	}
 
@@ -191,4 +205,14 @@ public class Remindy {
 			System.err.println("マウス移動に失敗: " + e.getMessage());
 		}
 	}
+
+	private static String truncate10(String msg) {
+		final int maxLength = 10;
+		if (msg == null)
+			return "";
+		if (msg.length() <= maxLength)
+			return msg;
+		return msg.substring(0, maxLength);
+	}
+
 }
