@@ -11,6 +11,27 @@
 	<description>Java 1.8 + AWT によるCLIリマインダー</description>
 	<url>https://github.com/igapyon/remindy</url>
 
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Toshiki Iga</name>
+			<email>igapyon@gmail.com</email>
+			<url>https://github.com/igapyon</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:igapyon/remindy.git</connection>
+		<developerConnection>scm:git:git@github.com:igapyon/remindy.git</developerConnection>
+		<url>https://github.com/igapyon/remindy</url>
+	</scm>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
