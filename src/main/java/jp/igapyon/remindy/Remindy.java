@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class Remindy {
-	public static final String VERSION = "20250626a";
+	public static final String VERSION = "20250701a";
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 	private static final String ENCODING_UTF8 = "UTF-8";
 
