@@ -109,7 +109,7 @@ public class Remindy {
 		// リマインド
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add(truncate22("🔔時間🔔 " + r.message));
+				lines.add(truncate("🔔時間🔔 " + r.message));
 			}
 		}
 
@@ -121,9 +121,9 @@ public class Remindy {
 				String future;
 				if (minutes > 60) {
 					double hours = Math.floor(minutes / 6.0) / 10.0;
-					future = truncate22(String.format("%s (%.1f時間後) ", r.time, hours) + r.message);
+					future = truncate(String.format("%s (%.1f時間後) ", r.time, hours) + r.message);
 				} else {
-					future = truncate22(String.format("%s (%d分後)", r.time, minutes) + r.message);
+					future = truncate(String.format("%s (%d分後)", r.time, minutes) + r.message);
 				}
 				lines.add("🗓 " + future);
 			}
@@ -206,8 +206,8 @@ public class Remindy {
 		}
 	}
 
-	private static String truncate22(String msg) {
-		final int maxLength = 22;
+	private static String truncate(String msg) {
+		final int maxLength = 24;
 		if (msg == null)
 			return "";
 		if (msg.length() <= maxLength)
