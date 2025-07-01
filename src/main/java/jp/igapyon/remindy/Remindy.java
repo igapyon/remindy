@@ -123,7 +123,7 @@ public class Remindy {
 					double hours = Math.floor(minutes / 6.0) / 10.0;
 					future = truncate(String.format("%s (%.1f時間後) ", r.time, hours) + r.message);
 				} else {
-					future = truncate(String.format("%s (%d分後)", r.time, minutes) + r.message);
+					future = truncate(String.format("%s (%d分後) ", r.time, minutes) + r.message);
 				}
 				lines.add("🗓 " + future);
 			}
