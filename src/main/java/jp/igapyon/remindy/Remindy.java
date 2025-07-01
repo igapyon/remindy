@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class Remindy {
-	public static final String VERSION = "20250626a";
+	public static final String VERSION = "20250701a";
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 	private static final String ENCODING_UTF8 = "UTF-8";
 
@@ -109,7 +109,7 @@ public class Remindy {
 		// リマインド
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add("🔔時間🔔 " + truncate10(r.message));
+				lines.add(truncate("🔔時間🔔 " + r.message));
 			}
 		}
 
@@ -121,9 +121,9 @@ public class Remindy {
 				String future;
 				if (minutes > 60) {
 					double hours = Math.floor(minutes / 6.0) / 10.0;
-					future = String.format("%s（%.1f時間後）%s", r.time, hours, truncate10(r.message));
+					future = truncate(String.format("%s (%.1f時間後) ", r.time, hours) + r.message);
 				} else {
-					future = String.format("%s（%d分後）%s", r.time, minutes, truncate10(r.message));
+					future = truncate(String.format("%s (%d分後) ", r.time, minutes) + r.message);
 				}
 				lines.add("🗓 " + future);
 			}
@@ -206,13 +206,12 @@ public class Remindy {
 		}
 	}
 
-	private static String truncate10(String msg) {
-		final int maxLength = 10;
+	private static String truncate(String msg) {
+		final int maxLength = 24;
 		if (msg == null)
 			return "";
 		if (msg.length() <= maxLength)
 			return msg;
 		return msg.substring(0, maxLength);
 	}
-
 }
