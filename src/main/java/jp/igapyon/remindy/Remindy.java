@@ -22,6 +22,8 @@ import java.awt.Robot;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -40,7 +42,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class Remindy {
-	public static final String VERSION = "20250701a";
+	public static final String VERSION = "20250717a";
+	// reminders.json を外部パスに設定する場合
+	public static final String REMINDER_EXTERNAL_PATH = "";
+
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 	private static final String ENCODING_UTF8 = "UTF-8";
 
@@ -167,15 +172,24 @@ public class Remindy {
 	private void loadReminders() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			InputStreamReader reader = new InputStreamReader(
-					getClass().getClassLoader().getResourceAsStream("reminders.json"), ENCODING_UTF8);
-			reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
-			});
-			reader.close();
+			if (REMINDER_EXTERNAL_PATH.trim().length() == 0) {
+				try (InputStreamReader reader = new InputStreamReader(
+						getClass().getClassLoader().getResourceAsStream("reminders.json"), ENCODING_UTF8)) {
+					reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
+					});
+				}
+			} else {
+				try (InputStreamReader reader = new InputStreamReader(
+						new FileInputStream(new File(REMINDER_EXTERNAL_PATH, "reminders.json")), ENCODING_UTF8)) {
+					reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
+					});
+				}
+			}
 			System.err.println("リマインドを " + reminders.size() + " 件読み込みました。");
 
 			// 時刻順ソートを追加
 			Collections.sort(reminders, new java.util.Comparator<Reminder>() {
+
 				public int compare(Reminder r1, Reminder r2) {
 					LocalTime t1 = LocalTime.parse(r1.time, TIME_FORMATTER);
 					LocalTime t2 = LocalTime.parse(r2.time, TIME_FORMATTER);
