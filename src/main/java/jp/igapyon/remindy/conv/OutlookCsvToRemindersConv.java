@@ -39,9 +39,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class OutlookCsvToRemindersConv {
+	// reminders.json を外部パスに設定する場合
+	public static final String REMINDER_EXTERNAL_PATH = "";
+
 	public static void main(String[] args) throws Exception {
 		File csvFile = new File("./src/main/resources/input/outlook-calendar.csv");
 		File jsonFile = new File("./src/main/resources/reminders.json");
+		if (REMINDER_EXTERNAL_PATH.trim().length() > 0) {
+			csvFile = new File(REMINDER_EXTERNAL_PATH, "outlook-calendar.csv");
+			jsonFile = new File(REMINDER_EXTERNAL_PATH, "reminders.json");
+		}
 
 		List<Reminder> reminders = new ArrayList<>();
 		LocalDate today = LocalDate.now();
