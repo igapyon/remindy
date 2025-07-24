@@ -3,8 +3,11 @@ package jp.igapyon.remindy.popup;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Polygon;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -98,14 +101,27 @@ public class JustTimePopup {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.setColor(BLACK);
-				g.fillRect(0, 0, getWidth(), getHeight());
-
-				g.setColor(RED);
 				int stripeWidth = 20;
-				for (int x = 0; x < getWidth(); x += stripeWidth) {
-					g.fillPolygon(new int[] { x, x + stripeWidth, x }, new int[] { 0, 0, getHeight() }, 3);
+				int stripeHeight = getHeight();
+
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setColor(BLACK);
+				g2d.fillRect(0, 0, getWidth(), getHeight());
+
+				for (int x = -getWidth(); x < getWidth() * 2; x += stripeWidth * 2) {
+					Polygon redStripe = new Polygon();
+					redStripe.addPoint(x, 0);
+					redStripe.addPoint(x + stripeWidth, 0);
+					redStripe.addPoint(x + stripeWidth + stripeHeight, stripeHeight);
+					redStripe.addPoint(x + stripeHeight, stripeHeight);
+					g2d.setColor(RED);
+					g2d.fillPolygon(redStripe);
 				}
+			}
+
+			@Override
+			public Dimension getPreferredSize() {
+				return new Dimension(0, 30); // 高さ30ピクセル
 			}
 		};
 	}
