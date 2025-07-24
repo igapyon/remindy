@@ -54,8 +54,6 @@ public class RemindScreenPopup2 {
 			center.add(label);
 			root.add(center, BorderLayout.CENTER);
 
-			root.add(createStripePanel(), BorderLayout.SOUTH);
-
 			// 下部説明テキスト（白文字、改行対応）
 			JTextArea subTextArea = new JTextArea(subtext);
 			subTextArea.setFont(FONT_SUBTEXT);
@@ -68,6 +66,8 @@ public class RemindScreenPopup2 {
 			subTextArea.setWrapStyleWord(true);
 			subTextArea.setBorder(new EmptyBorder(10, 20, 10, 20));
 			root.add(subTextArea, BorderLayout.SOUTH);
+
+			root.add(createStripePanel(), BorderLayout.SOUTH);
 
 			window.getContentPane().add(root);
 			window.setVisible(true);
@@ -83,34 +83,35 @@ public class RemindScreenPopup2 {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				int h = getHeight();
-				int w = 30;
+				int panelHeight = getHeight();
+				int stripeHeight = panelHeight - 8; // 上下に4pxの余白を確保
+				int stripeY = 4;
 
 				Graphics2D g2d = (Graphics2D) g;
 				g2d.setColor(DARK_BG);
-				g2d.fillRect(0, 0, getWidth(), h);
+				g2d.fillRect(0, 0, getWidth(), panelHeight);
 
-				// 正しい：右上がり（／）
+				// 斜めストライプ（右上がり ／）
 				g2d.setColor(STRIPE_COLOR);
+				int w = 30;
 				for (int x = -getWidth(); x < getWidth() * 2; x += w * 2) {
 					Polygon stripe = new Polygon();
-					stripe.addPoint(x, 0); // 左上
-					stripe.addPoint(x + w, 0); // 右上
-					stripe.addPoint(x + w + h, h); // 右下
-					stripe.addPoint(x + h, h); // 左下
+					stripe.addPoint(x, stripeY);
+					stripe.addPoint(x + w, stripeY);
+					stripe.addPoint(x + w + stripeHeight, stripeY + stripeHeight);
+					stripe.addPoint(x + stripeHeight, stripeY + stripeHeight);
 					g2d.fillPolygon(stripe);
 				}
 
-				// 上下の直線（赤）
-				g2d.fillRect(0, 0, getWidth(), 4); // 上線
-				g2d.fillRect(0, h - 4, getWidth(), 4); // 下線
+				// 上下の赤線（4px）
+				g2d.fillRect(0, 0, getWidth(), 4);
+				g2d.fillRect(0, panelHeight - 4, getWidth(), 4);
 			}
 
 			@Override
 			public Dimension getPreferredSize() {
-				return new Dimension(0, 30); // 高さ
+				return new Dimension(0, 30); // 全体高さ
 			}
 		};
 	}
-
 }
