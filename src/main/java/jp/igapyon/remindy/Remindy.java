@@ -39,13 +39,11 @@ import java.util.TimerTask;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.igapyon.remindy.conv.OutlookCsvToRemindersConv;
+import jp.igapyon.remindy.ui.JyuWarningPopup;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class Remindy {
-	public static final String VERSION = "20250717a";
-	// reminders.json を外部パスに設定する場合
-	public static final String REMINDER_EXTERNAL_PATH = "";
-
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 	private static final String ENCODING_UTF8 = "UTF-8";
 
@@ -58,6 +56,7 @@ public class Remindy {
 		new Remindy().process();
 	}
 
+	@SuppressWarnings("unused")
 	public void process() {
 		if (!SystemTray.isSupported()) {
 			System.err.println("この環境では通知がサポートされていません。中断終了します。");
@@ -65,7 +64,16 @@ public class Remindy {
 		}
 
 		setupTrayIcon();
-		displayMessage("Remindy (" + VERSION + ")", "名言とリマインドを毎分通知します");
+		JyuWarningPopup.showPopup("Remindy (" + RemindyConstants.VERSION + ")" + "\nリマインドと名言を毎分通知します");
+		displayMessage("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
+
+		try {
+			if (RemindyConstants.REMINDER_EXTERNAL_PATH.trim().length() > 0) {
+				OutlookCsvToRemindersConv.main(new String[] {});
+			}
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 
 		loadProverbs();
 		loadReminders();
@@ -96,6 +104,11 @@ public class Remindy {
 		LocalTime now = LocalTime.now();
 		String title = buildTitle(now);
 		String message = buildMessage(now);
+
+		if (message.startsWith("🔔時間🔔")) {
+			JyuWarningPopup.showPopup((title == null ? "" : title + "\n") + getFirstThreeLines(message));
+		}
+
 		displayMessage(title, message);
 		pikoMouse();
 	}
@@ -172,7 +185,7 @@ public class Remindy {
 	private void loadReminders() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			if (REMINDER_EXTERNAL_PATH.trim().length() == 0) {
+			if (RemindyConstants.REMINDER_EXTERNAL_PATH.trim().length() == 0) {
 				try (InputStreamReader reader = new InputStreamReader(
 						getClass().getClassLoader().getResourceAsStream("reminders.json"), ENCODING_UTF8)) {
 					reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
@@ -180,7 +193,8 @@ public class Remindy {
 				}
 			} else {
 				try (InputStreamReader reader = new InputStreamReader(
-						new FileInputStream(new File(REMINDER_EXTERNAL_PATH, "reminders.json")), ENCODING_UTF8)) {
+						new FileInputStream(new File(RemindyConstants.REMINDER_EXTERNAL_PATH, "reminders.json")),
+						ENCODING_UTF8)) {
 					reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
 					});
 				}
@@ -227,5 +241,20 @@ public class Remindy {
 		if (msg.length() <= maxLength)
 			return msg;
 		return msg.substring(0, maxLength);
+	}
+
+	public static String getFirstThreeLines(String text) {
+		String[] lines = text.split("\\R");
+		StringBuilder result = new StringBuilder();
+
+		int limit = Math.min(3, lines.length);
+		for (int i = 0; i < limit; i++) {
+			result.append(lines[i]);
+			if (i < limit - 1) {
+				result.append(System.lineSeparator());
+			}
+		}
+
+		return result.toString();
 	}
 }
