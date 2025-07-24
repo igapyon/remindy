@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
 
 import javax.swing.JLabel;
@@ -82,25 +83,34 @@ public class RemindScreenPopup2 {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				g.setColor(DARK_BG);
-				g.fillRect(0, 0, getWidth(), getHeight());
-				g.setColor(STRIPE_COLOR);
-				int w = 30;
 				int h = getHeight();
+				int w = 30;
+
+				Graphics2D g2d = (Graphics2D) g;
+				g2d.setColor(DARK_BG);
+				g2d.fillRect(0, 0, getWidth(), h);
+
+				// 正しい：右上がり（／）
+				g2d.setColor(STRIPE_COLOR);
 				for (int x = -getWidth(); x < getWidth() * 2; x += w * 2) {
-					Polygon p = new Polygon();
-					p.addPoint(x, 0);
-					p.addPoint(x + w, 0);
-					p.addPoint(x + w + h, h);
-					p.addPoint(x + h, h);
-					g.fillPolygon(p);
+					Polygon stripe = new Polygon();
+					stripe.addPoint(x, 0); // 左上
+					stripe.addPoint(x + w, 0); // 右上
+					stripe.addPoint(x + w + h, h); // 右下
+					stripe.addPoint(x + h, h); // 左下
+					g2d.fillPolygon(stripe);
 				}
+
+				// 上下の直線（赤）
+				g2d.fillRect(0, 0, getWidth(), 4); // 上線
+				g2d.fillRect(0, h - 4, getWidth(), 4); // 下線
 			}
 
 			@Override
 			public Dimension getPreferredSize() {
-				return new Dimension(0, 30);
+				return new Dimension(0, 30); // 高さ
 			}
 		};
 	}
+
 }
