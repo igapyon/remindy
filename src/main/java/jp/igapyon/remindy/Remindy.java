@@ -106,7 +106,7 @@ public class Remindy {
 		String message = buildMessage(now);
 
 		if (message.startsWith("🔔時間🔔")) {
-			JyuWarningPopup.showPopup((title == null ? "" : title + "\n") + message);
+			JyuWarningPopup.showPopup((title == null ? "" : title + "\n") + getFirstThreeLines(message));
 		}
 
 		displayMessage(title, message);
@@ -241,5 +241,20 @@ public class Remindy {
 		if (msg.length() <= maxLength)
 			return msg;
 		return msg.substring(0, maxLength);
+	}
+
+	public static String getFirstThreeLines(String text) {
+		String[] lines = text.split("\\R");
+		StringBuilder result = new StringBuilder();
+
+		int limit = Math.min(3, lines.length);
+		for (int i = 0; i < limit; i++) {
+			result.append(lines[i]);
+			if (i < limit - 1) {
+				result.append(System.lineSeparator());
+			}
+		}
+
+		return result.toString();
 	}
 }
