@@ -79,8 +79,8 @@ public class JustTimePopup {
 			window.getContentPane().add(mainPanel);
 			window.setVisible(true);
 
-			// 15秒後に自動で閉じる
-			new Timer(15000, e -> window.dispose()).start();
+			// 10秒後に自動で閉じる
+			new Timer(10000, e -> window.dispose()).start();
 		});
 	}
 
