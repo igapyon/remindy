@@ -40,7 +40,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jp.igapyon.remindy.conv.OutlookCsvToRemindersConv;
-import jp.igapyon.remindy.popup.JustTimePopup;
+import jp.igapyon.remindy.popup.RemindScreenPopup1;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class Remindy {
@@ -64,7 +64,7 @@ public class Remindy {
 		}
 
 		setupTrayIcon();
-		JustTimePopup.show("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
+		RemindScreenPopup1.show("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
 		displayMessage("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
 
 		try {
@@ -106,7 +106,7 @@ public class Remindy {
 		String message = buildMessage(now);
 
 		if (message.startsWith("🔔時間🔔")) {
-			JustTimePopup.show(title, message);
+			RemindScreenPopup1.show(title, message);
 		}
 
 		displayMessage(title, message);
