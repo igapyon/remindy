@@ -39,6 +39,7 @@ import java.util.TimerTask;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.igapyon.remindy.conv.OutlookCsvToRemindersConv;
 import jp.igapyon.remindy.popup.JustTimePopup;
 import jp.igapyon.remindy.vo.Reminder;
 
@@ -62,7 +63,15 @@ public class Remindy {
 		}
 
 		setupTrayIcon();
-		displayMessage("Remindy (" + RemindyConstants.VERSION + ")", "名言とリマインドを毎分通知します");
+		JustTimePopup.show("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
+		displayMessage("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
+
+		try {
+			if (false)
+				OutlookCsvToRemindersConv.main(new String[] {});
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 
 		loadProverbs();
 		loadReminders();
