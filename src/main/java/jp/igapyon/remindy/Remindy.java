@@ -98,6 +98,9 @@ public class Remindy {
 		String message = buildMessage(now);
 		displayMessage(title, message);
 		pikoMouse();
+
+		// TODO title によって表示
+		JustTimePopup.show(title, message);
 	}
 
 	private String buildTitle(LocalTime now) {
