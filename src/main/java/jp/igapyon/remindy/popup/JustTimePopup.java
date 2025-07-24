@@ -13,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -87,10 +88,20 @@ public class JustTimePopup {
 		JPanel panel = new JPanel();
 		panel.setBackground(BLACK);
 		panel.setBorder(new LineBorder(RED, 2));
-		JLabel label = new JLabel(text);
-		label.setFont(FONT_LABEL);
-		label.setForeground(RED);
-		panel.add(label);
+		panel.setLayout(new BorderLayout());
+
+		JTextArea textArea = new JTextArea(text);
+		textArea.setFont(FONT_LABEL);
+		textArea.setForeground(RED);
+		textArea.setBackground(BLACK);
+		textArea.setEditable(false);
+		textArea.setFocusable(false);
+		textArea.setOpaque(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		textArea.setBorder(null);
+
+		panel.add(textArea, BorderLayout.CENTER);
 		return panel;
 	}
 
