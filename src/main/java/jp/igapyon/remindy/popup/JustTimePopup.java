@@ -32,6 +32,8 @@ public class JustTimePopup {
 			window.setLocationRelativeTo(null);
 
 			JPanel mainPanel = new JPanel() {
+				private static final long serialVersionUID = 1L;
+
 				@Override
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
@@ -49,7 +51,7 @@ public class JustTimePopup {
 			centerPanel.setBackground(BLACK);
 			centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
-			JLabel labelWarning = new JLabel("警　告", SwingConstants.CENTER);
+			JLabel labelWarning = new JLabel("注意喚起", SwingConstants.CENTER);
 			labelWarning.setFont(FONT_KANJI);
 			labelWarning.setForeground(RED);
 			labelWarning.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -91,6 +93,8 @@ public class JustTimePopup {
 
 	private static JPanel createStripePanel() {
 		return new JPanel() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);

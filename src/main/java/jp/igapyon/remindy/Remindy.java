@@ -56,6 +56,7 @@ public class Remindy {
 		new Remindy().process();
 	}
 
+	@SuppressWarnings("unused")
 	public void process() {
 		if (!SystemTray.isSupported()) {
 			System.err.println("この環境では通知がサポートされていません。中断終了します。");

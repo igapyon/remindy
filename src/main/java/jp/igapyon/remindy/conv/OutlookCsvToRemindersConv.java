@@ -55,6 +55,7 @@ public class OutlookCsvToRemindersConv {
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm"); // ← 出力用
 
 		try (Reader in = new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8)) {
+			@SuppressWarnings("deprecation")
 			CSVParser parser = CSVFormat.DEFAULT.withFirstRecordAsHeader().withTrim().parse(in);
 
 			for (CSVRecord record : parser) {
