@@ -1,4 +1,4 @@
-package jp.igapyon.remindy.popup;
+package jp.igapyon.remindy.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 
-public class RemindScreenPopup1 {
+public class EvWarningPopup {
 	private static final int WIDTH = 640;
 	private static final int HEIGHT = 360;
 	private static final Color BLACK = Color.BLACK;
