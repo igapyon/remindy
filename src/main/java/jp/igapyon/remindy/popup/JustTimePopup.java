@@ -1,5 +1,6 @@
 package jp.igapyon.remindy.popup;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -13,60 +14,61 @@ import javax.swing.JWindow;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.border.LineBorder;
 
 public class JustTimePopup {
-	private static final int WIDTH = 480;
-	private static final int HEIGHT = 240;
-	private static final Color BACKGROUND_COLOR = Color.decode("#D00000"); // 深い赤
-	private static final Color TEXT_COLOR = Color.WHITE;
-	private static final Font FONT_TITLE = new Font("Noto Sans CJK JP", Font.BOLD, 24);
-	private static final Font FONT_TIME = new Font("Noto Sans CJK JP", Font.BOLD, 32);
-	private static final Font FONT_MSG = new Font("Noto Sans CJK JP", Font.PLAIN, 24);
+	private static final int WIDTH = 640;
+	private static final int HEIGHT = 360;
+	private static final Color BLACK = Color.BLACK;
+	private static final Color RED = Color.decode("#D80000");
+	private static final Font FONT_KANJI = new Font("MS Mincho", Font.BOLD, 72); // または Noto Serif CJK
+	private static final Font FONT_LABEL = new Font("Meiryo UI", Font.BOLD, 20);
 
-	public static void show(String time, String message) {
+	public static void show(String jpText, String enText) {
 		SwingUtilities.invokeLater(() -> {
 			JWindow window = new JWindow();
 			window.setSize(WIDTH, HEIGHT);
 			window.setAlwaysOnTop(true);
-			window.setLocationRelativeTo(null); // 画面中央
+			window.setLocationRelativeTo(null);
 
 			JPanel mainPanel = new JPanel() {
 				@Override
 				protected void paintComponent(Graphics g) {
 					super.paintComponent(g);
-					g.setColor(BACKGROUND_COLOR);
+					g.setColor(BLACK);
 					g.fillRect(0, 0, getWidth(), getHeight());
-
-					// 上下の白ライン
-					g.setColor(Color.WHITE);
-					g.fillRect(0, 10, getWidth(), 6); // 上部ライン
-					g.fillRect(0, getHeight() - 16, getWidth(), 6); // 下部ライン
 				}
 			};
+			mainPanel.setLayout(new BorderLayout());
 
-			mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+			// 上部ストライプ
+			mainPanel.add(createStripePanel(), BorderLayout.NORTH);
 
-			JLabel labelHeader = new JLabel("【REMINDER】", SwingConstants.CENTER);
-			labelHeader.setFont(FONT_TITLE);
-			labelHeader.setForeground(TEXT_COLOR);
-			labelHeader.setAlignmentX(Component.CENTER_ALIGNMENT);
+			// 中央コンテンツ
+			JPanel centerPanel = new JPanel();
+			centerPanel.setBackground(BLACK);
+			centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
-			JLabel labelTime = new JLabel(time, SwingConstants.CENTER);
-			labelTime.setFont(FONT_TIME);
-			labelTime.setForeground(TEXT_COLOR);
-			labelTime.setAlignmentX(Component.CENTER_ALIGNMENT);
+			JLabel labelWarning = new JLabel("警　告", SwingConstants.CENTER);
+			labelWarning.setFont(FONT_KANJI);
+			labelWarning.setForeground(RED);
+			labelWarning.setAlignmentX(Component.CENTER_ALIGNMENT);
+			centerPanel.add(labelWarning);
+			centerPanel.add(Box.createVerticalStrut(20));
 
-			JLabel labelMessage = new JLabel(message, SwingConstants.CENTER);
-			labelMessage.setFont(FONT_MSG);
-			labelMessage.setForeground(TEXT_COLOR);
-			labelMessage.setAlignmentX(Component.CENTER_ALIGNMENT);
+			// パネル1（日本語）
+			JPanel panelJp = createTextPanel(jpText);
+			centerPanel.add(panelJp);
+			centerPanel.add(Box.createVerticalStrut(10));
 
-			mainPanel.add(Box.createVerticalStrut(30));
-			mainPanel.add(labelHeader);
-			mainPanel.add(Box.createVerticalStrut(10));
-			mainPanel.add(labelTime);
-			mainPanel.add(Box.createVerticalStrut(10));
-			mainPanel.add(labelMessage);
+			// パネル2（英語）
+			JPanel panelEn = createTextPanel(enText);
+			centerPanel.add(panelEn);
+
+			mainPanel.add(centerPanel, BorderLayout.CENTER);
+
+			// 下部ストライプ
+			mainPanel.add(createStripePanel(), BorderLayout.SOUTH);
 
 			window.getContentPane().add(mainPanel);
 			window.setVisible(true);
@@ -74,5 +76,33 @@ public class JustTimePopup {
 			// 5秒後に自動で閉じる
 			new Timer(5000, e -> window.dispose()).start();
 		});
+	}
+
+	private static JPanel createTextPanel(String text) {
+		JPanel panel = new JPanel();
+		panel.setBackground(BLACK);
+		panel.setBorder(new LineBorder(RED, 2));
+		JLabel label = new JLabel(text);
+		label.setFont(FONT_LABEL);
+		label.setForeground(RED);
+		panel.add(label);
+		return panel;
+	}
+
+	private static JPanel createStripePanel() {
+		return new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				g.setColor(BLACK);
+				g.fillRect(0, 0, getWidth(), getHeight());
+
+				g.setColor(RED);
+				int stripeWidth = 20;
+				for (int x = 0; x < getWidth(); x += stripeWidth) {
+					g.fillPolygon(new int[] { x, x + stripeWidth, x }, new int[] { 0, 0, getHeight() }, 3);
+				}
+			}
+		};
 	}
 }
