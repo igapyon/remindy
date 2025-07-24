@@ -68,8 +68,9 @@ public class Remindy {
 		displayMessage("Remindy (" + RemindyConstants.VERSION + ")", "リマインドと名言を毎分通知します");
 
 		try {
-			if (false)
+			if (RemindyConstants.REMINDER_EXTERNAL_PATH.trim().length() > 0) {
 				OutlookCsvToRemindersConv.main(new String[] {});
+			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
