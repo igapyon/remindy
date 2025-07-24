@@ -39,13 +39,10 @@ import java.util.TimerTask;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.igapyon.remindy.popup.JustTimePopup;
 import jp.igapyon.remindy.vo.Reminder;
 
 public class Remindy {
-	public static final String VERSION = "20250717a";
-	// reminders.json を外部パスに設定する場合
-	public static final String REMINDER_EXTERNAL_PATH = "";
-
 	private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 	private static final String ENCODING_UTF8 = "UTF-8";
 
@@ -65,7 +62,7 @@ public class Remindy {
 		}
 
 		setupTrayIcon();
-		displayMessage("Remindy (" + VERSION + ")", "名言とリマインドを毎分通知します");
+		displayMessage("Remindy (" + RemindyConstants.VERSION + ")", "名言とリマインドを毎分通知します");
 
 		loadProverbs();
 		loadReminders();
@@ -175,7 +172,7 @@ public class Remindy {
 	private void loadReminders() {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
-			if (REMINDER_EXTERNAL_PATH.trim().length() == 0) {
+			if (RemindyConstants.REMINDER_EXTERNAL_PATH.trim().length() == 0) {
 				try (InputStreamReader reader = new InputStreamReader(
 						getClass().getClassLoader().getResourceAsStream("reminders.json"), ENCODING_UTF8)) {
 					reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
@@ -183,7 +180,8 @@ public class Remindy {
 				}
 			} else {
 				try (InputStreamReader reader = new InputStreamReader(
-						new FileInputStream(new File(REMINDER_EXTERNAL_PATH, "reminders.json")), ENCODING_UTF8)) {
+						new FileInputStream(new File(RemindyConstants.REMINDER_EXTERNAL_PATH, "reminders.json")),
+						ENCODING_UTF8)) {
 					reminders = mapper.readValue(reader, new TypeReference<List<Reminder>>() {
 					});
 				}
