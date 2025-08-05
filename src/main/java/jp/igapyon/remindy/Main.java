@@ -33,7 +33,7 @@ public class Main {
 		MessageBuilder builder = new MessageBuilder(reminders, proverbs);
 
 		MinuteTicker ticker = new MinuteTicker();
-		ticker.addCommand(new StartupCommand(RemindyConstants.VERSION));
+		ticker.addCommand(new StartupCommand(RemindyConstants.VERSION, reminders));
 		ticker.addCommand(new NotifyCommand(trayIcon, builder));
 		ticker.addCommand(new PopupCommand(builder));
 		ticker.addCommand(new PikoMouseCommand());
