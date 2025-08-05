@@ -135,7 +135,7 @@ public class Remindy {
 		for (Reminder r : reminders) {
 			LocalTime rTime = LocalTime.parse(r.time, TIME_FORMATTER);
 			if (rTime.isAfter(now)) {
-				long minutes = Duration.between(now, rTime).toMinutes();
+				long minutes = Math.round(Duration.between(now, rTime).getSeconds() / 60.0);
 				String future;
 				if (minutes > 60) {
 					double hours = Math.floor(minutes / 6.0) / 10.0;
