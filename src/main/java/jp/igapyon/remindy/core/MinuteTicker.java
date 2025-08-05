@@ -16,19 +16,31 @@ public class MinuteTicker {
 	}
 
 	public void start() {
-		Timer timer = new Timer(true);
+		// ===== 即時実行：StartupCommand を起動直後に実行 =====
+		LocalTime now = LocalTime.now();
+		for (MinuteCommand cmd : commandList) {
+			if (cmd.getClass().getSimpleName().equals("StartupCommand")) {
+				try {
+					cmd.execute(now);
+				} catch (Exception e) {
+					System.err.println("StartupCommand 実行エラー: " + e.getMessage());
+				}
+			}
+		}
 
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime nextMinute = now.plusMinutes(1).withSecond(0).withNano(0);
-		long delay = Duration.between(now, nextMinute).toMillis();
+		// ===== 00秒タイミングでの定期実行 =====
+		Timer timer = new Timer(true);
+		LocalDateTime nowDateTime = LocalDateTime.now();
+		LocalDateTime nextMinute = nowDateTime.plusMinutes(1).withSecond(0).withNano(0);
+		long delay = Duration.between(nowDateTime, nextMinute).toMillis();
 
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				LocalTime now = LocalTime.now();
+				LocalTime currentTime = LocalTime.now();
 				for (MinuteCommand cmd : commandList) {
 					try {
-						cmd.execute(now);
+						cmd.execute(currentTime);
 					} catch (Exception e) {
 						System.err.println("コマンドの実行中にエラー: " + e.getMessage());
 					}
