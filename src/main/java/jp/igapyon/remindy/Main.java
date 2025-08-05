@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025 Toshiki Iga
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package jp.igapyon.remindy;
 
 import java.awt.TrayIcon;
@@ -15,7 +30,27 @@ import jp.igapyon.remindy.logic.MessageBuilder;
 import jp.igapyon.remindy.util.TrayIconSetup;
 import jp.igapyon.remindy.vo.Reminder;
 
+/**
+ * Remindy アプリケーションのエントリポイント。
+ * <p>
+ * Java + AWT による CLI リマインダーアプリ。毎分、現在のリマインダーと格言を通知・表示します。
+ * </p>
+ * 
+ * <ul>
+ * <li>Outlook CSV から reminders.json を生成（オプション）</li>
+ * <li>Tray アイコンの初期化</li>
+ * <li>リマインダーと格言の読み込み</li>
+ * <li>各種コマンドを MinuteTicker に登録し、毎分実行</li>
+ * </ul>
+ * 
+ * @author Toshiki Iga
+ */
 public class Main {
+	/**
+	 * Remindy アプリケーションの起動メソッド。
+	 * 
+	 * @param args 実行時引数（現在未使用）
+	 */
 	public static void main(String[] args) {
 		// ⬇ 外部CSVが指定されていれば reminders.json を生成
 		if (RemindyConstants.REMINDER_EXTERNAL_PATH.trim().length() > 0) {
@@ -26,20 +61,25 @@ public class Main {
 			}
 		}
 
+		// トレイアイコン初期化
 		TrayIcon trayIcon = TrayIconSetup.createTrayIcon();
-		List<Reminder> reminders = ReminderLoader.load(); // 別クラスで読み込み想定
-		List<String> proverbs = ProverbLoader.load(); // 同上
 
+		// リマインダーと格言を読み込み
+		List<Reminder> reminders = ReminderLoader.load();
+		List<String> proverbs = ProverbLoader.load();
+
+		// 通知用メッセージ構築ビルダー
 		MessageBuilder builder = new MessageBuilder(reminders, proverbs);
 
+		// 毎分実行タイマの初期化とコマンド登録
 		MinuteTicker ticker = new MinuteTicker();
-		ticker.addCommand(new StartupCommand(RemindyConstants.VERSION, trayIcon, reminders));
-		ticker.addCommand(new NotifyCommand(trayIcon, builder));
-		ticker.addCommand(new PopupCommand(builder));
-		ticker.addCommand(new PikoMouseCommand());
+		ticker.addCommand(new StartupCommand(RemindyConstants.VERSION, trayIcon, reminders)); // 起動時通知
+		ticker.addCommand(new NotifyCommand(trayIcon, builder)); // 毎分通知
+		ticker.addCommand(new PopupCommand(builder)); // 毎分ポップアップ
+		ticker.addCommand(new PikoMouseCommand()); // マウスピコピコ
 		ticker.start();
 
-		// メインスレッド維持
+		// メインスレッドを維持（Timer のため）
 		while (true) {
 			try {
 				Thread.sleep(1000);
