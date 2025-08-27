@@ -112,7 +112,7 @@ public class MessageBuilder {
 		List<String> lines = new ArrayList<>();
 		for (Reminder r : reminders) {
 			if (nowStr.equals(r.time)) {
-				lines.add(truncate("🔔時間🔔 " + r.message));
+				lines.add(truncate(r.message));
 			}
 		}
 		return lines;
