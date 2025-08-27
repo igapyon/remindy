@@ -52,7 +52,7 @@ public class JyuWarningPanel extends JPanel {
 	private static final int GAP_LINE_TO_STRIPE = 8;
 	private static final int STRIPE_BAND_HEIGHT = 36;
 	private static final int STRIPE_UNIT_WIDTH = 36;
-	private static final Font MAIN_FONT = new Font("MS Gothic", Font.BOLD, 36);
+	private static final Font MAIN_FONT = new Font("MS Gothic", Font.BOLD, 40);
 
 	private final String message;
 
