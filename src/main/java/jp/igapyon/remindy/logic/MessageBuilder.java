@@ -102,6 +102,23 @@ public class MessageBuilder {
 	}
 
 	/**
+	 * 現在時刻に一致する 🔔 リマインダーだけを返します（副作用なし）。
+	 *
+	 * @param now 現在時刻
+	 * @return 「🔔時間🔔 …」の行を要素とするリスト（0件の場合あり）
+	 */
+	public List<String> buildNowOnly(LocalTime now) {
+		String nowStr = now.format(TIME_FORMATTER);
+		List<String> lines = new ArrayList<>();
+		for (Reminder r : reminders) {
+			if (nowStr.equals(r.time)) {
+				lines.add(truncate(r.message));
+			}
+		}
+		return lines;
+	}
+
+	/**
 	 * 指定された文字列を最大長までに切り詰めます。
 	 *
 	 * @param msg 対象の文字列
