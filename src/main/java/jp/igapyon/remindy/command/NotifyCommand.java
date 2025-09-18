@@ -18,6 +18,7 @@ package jp.igapyon.remindy.command;
 import java.awt.TrayIcon;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import jp.igapyon.remindy.core.MinuteCommand;
 import jp.igapyon.remindy.logic.MessageBuilder;
@@ -34,6 +35,14 @@ import jp.igapyon.remindy.logic.MessageBuilder;
  * 【通知】12:34:00
  * 🔔時間🔔 ミーティング
  * </pre>
+ * 
+ * <p>
+ * ただし通知を行うのは以下の条件に限定されます:
+ * <ul>
+ * <li>現在時刻にちょうど一致する 🔔 リマインダーがある場合</li>
+ * <li>または分が 00, 10, 20, 30, 40, 50 のいずれかの場合</li>
+ * </ul>
+ * </p>
  * 
  * @author Toshiki Iga
  */
@@ -54,12 +63,25 @@ public class NotifyCommand implements MinuteCommand {
 	}
 
 	/**
-	 * 現在時刻に基づいてメッセージを生成し、トレイ通知およびコンソールに表示します。
+	 * 現在時刻に基づいてメッセージを生成し、条件を満たす場合のみ トレイ通知およびコンソールに表示します。
 	 * 
 	 * @param now 現在の時刻
 	 */
 	@Override
 	public void execute(LocalTime now) {
+		// 🔔ちょうどのリマインダーがあるか？
+		List<String> bellOnly = messageBuilder.buildNowOnly(now);
+		boolean hasBellNow = bellOnly != null && !bellOnly.isEmpty();
+
+		// 10分刻みか？（00,10,20,30,40,50分）
+		boolean isTenMinuteMark = (now.getMinute() % 10) == 0;
+
+		// どちらでもなければ通知しない
+		if (!(hasBellNow || isTenMinuteMark)) {
+			return;
+		}
+
+		// 通知実行
 		String message = messageBuilder.build(now);
 		if (trayIcon != null && message != null && !message.isEmpty()) {
 			trayIcon.displayMessage("Remindy", message, TrayIcon.MessageType.INFO);

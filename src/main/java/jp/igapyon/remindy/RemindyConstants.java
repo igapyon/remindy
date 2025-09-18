@@ -37,7 +37,7 @@ public class RemindyConstants {
 	/**
 	 * Remindy アプリケーションのバージョン。
 	 */
-	public static final String VERSION = "20250827a";
+	public static final String VERSION = "20250917a";
 
 	/**
 	 * reminders.json を外部パスから読み込む場合のディレクトリパス。
