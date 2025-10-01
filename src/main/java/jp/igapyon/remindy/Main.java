@@ -33,14 +33,14 @@ import jp.igapyon.remindy.vo.Reminder;
 /**
  * Remindy アプリケーションのエントリポイント。
  * <p>
- * Java + AWT による CLI リマインダーアプリ。毎分、現在のリマインダーと格言を通知・表示します。
+ * Java + AWT による CLI リマインダーアプリ。1分ごとに状態を確認し、予定時刻や10分刻みのタイミングで通知・表示します。
  * </p>
  * 
  * <ul>
  * <li>Outlook CSV から reminders.json を生成（オプション）</li>
  * <li>Tray アイコンの初期化</li>
  * <li>リマインダーと格言の読み込み</li>
- * <li>各種コマンドを MinuteTicker に登録し、毎分実行</li>
+ * <li>各種コマンドを MinuteTicker に登録し、1分ごとにチェック</li>
  * </ul>
  * 
  * @author Toshiki Iga
@@ -71,11 +71,11 @@ public class Main {
 		// 通知用メッセージ構築ビルダー
 		MessageBuilder builder = new MessageBuilder(reminders, proverbs);
 
-		// 毎分実行タイマの初期化とコマンド登録
+		// 毎分チェックタイマの初期化とコマンド登録
 		MinuteTicker ticker = new MinuteTicker();
 		ticker.addCommand(new StartupCommand(RemindyConstants.VERSION, trayIcon, reminders)); // 起動時通知
-		ticker.addCommand(new NotifyCommand(trayIcon, builder)); // 毎分通知
-		ticker.addCommand(new PopupCommand(builder)); // 毎分ポップアップ
+		ticker.addCommand(new NotifyCommand(trayIcon, builder)); // 通知判定 (10分刻み/予定時刻)
+		ticker.addCommand(new PopupCommand(builder)); // ポップアップ判定 (10分刻み/予定時刻)
 		ticker.addCommand(new PikoMouseCommand()); // マウスピコピコ
 		ticker.start();
 
