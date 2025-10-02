@@ -64,7 +64,7 @@ remindy/
 | `Main.java`                                  | アプリケーションのエントリーポイント。トレイアイコンや `MinuteTicker` の初期化を担当。 |
 | `MinuteTicker.java`                          | 毎分タイミングで `MinuteCommand` 群を順に実行。                    |
 | `StartupCommand.java`                        | 起動時にリマインド予定とバージョン情報をコンソール・ポップアップ・トレイに表示。            |
-| `NotifyCommand.java`                         | 毎分、通知メッセージをシステムトレイに表示。                              |
+| `NotifyCommand.java`                         | 10分刻みと予定時刻で通知メッセージをシステムトレイに表示。                |
 | `PopupCommand.java`                          | 🔔リマインダー時刻と一致した場合にカスタムポップアップを表示。                    |
 | `PikoMouseCommand.java`                      | 毎分マウスを微小移動し、スリープ抑止（お好みで有効化）。                        |
 | `MessageBuilder.java`                        | リマインダーと格言を統合し、メッセージを構築。                             |
