@@ -97,12 +97,12 @@ public class StartupCommand implements MinuteCommand {
 		}
 
 		// GUIポップアップ表示
-		String popupMsg = "Remindy (" + version + ")" + "\nリマインドと名言を毎分通知します";
+		String popupMsg = "Remindy (" + version + ")" + "\nリマインドと名言を10分ごとと予定時刻にお知らせします";
 		JyuWarningPopup.showPopup(popupMsg);
 
 		// Trayアイコン通知
 		if (trayIcon != null) {
-			trayIcon.displayMessage("Remindy", "リマインドと名言を毎分通知します", TrayIcon.MessageType.INFO);
+			trayIcon.displayMessage("Remindy", "リマインドと名言を10分ごとと予定時刻にお知らせします", TrayIcon.MessageType.INFO);
 		}
 	}
 }
