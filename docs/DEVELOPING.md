@@ -99,8 +99,9 @@ java -jar target/remindy-1.20250805.1-jar-with-dependencies.jar
 
 ## 🔢 バージョン管理のルール
 
-- リリース時は `pom.xml` の `<version>` と `src/main/java/jp/igapyon/remindy/RemindyConstants.java` の `VERSION` を必ず同じ値に更新する。
-- `RemindyConstants.VERSION` はポップアップやログに表示されるため、Maven の成果物バージョンとずれると表示と実際のビルドが一致しなくなる。バージョン更新作業では両方を同時に編集し、コミット前に差分を確認すること。
+- Maven 側 (`pom.xml`): `1.<yyyyMMdd>.<n>` 形式。例: `1.20251212.1`。同じ日に複数リリースする場合は末尾の数字を 2, 3… と増やす。
+- アプリ側 (`RemindyConstants.VERSION`): `<yyyyMMdd><alpha>` 形式。例: `20251212a`。同日の 2 回目は `b`、3 回目は `c` とアルファベットを進める。
+- 2 つの値は文字列自体は異なるが、日付とリリース順は一致させる。作業時は両ファイルを忘れずに更新し、差分を確認すること。
 
 ---
 
