@@ -86,6 +86,13 @@ java -jar target/remindy-*-jar-with-dependencies.jar
 mvn package
 ```
 
+## 追加ドキュメント
+
+- 開発手順や依存関係、TODO などの補足資料は `docs/` ディレクトリにまとめています。
+  - `docs/DEVELOPING.md`: 開発時のセットアップや実行方法
+  - `docs/DEPENDENCIES.md`: 依存ライブラリの一覧
+  - `docs/TODO.md`: 今後のタスクメモ
+
 ## 補足機能（スリープ抑止の補助）
 
 `Remindy` には通知機能に加えて、マウスカーソルをわずかに動かす処理（`PikoMouseCommand`）が含まれています。  
