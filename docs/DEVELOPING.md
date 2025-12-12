@@ -97,6 +97,13 @@ java -jar target/remindy-1.20250805.1-jar-with-dependencies.jar
 
 ---
 
+## 🔢 バージョン管理のルール
+
+- リリース時は `pom.xml` の `<version>` と `src/main/java/jp/igapyon/remindy/RemindyConstants.java` の `VERSION` を必ず同じ値に更新する。
+- `RemindyConstants.VERSION` はポップアップやログに表示されるため、Maven の成果物バージョンとずれると表示と実際のビルドが一致しなくなる。バージョン更新作業では両方を同時に編集し、コミット前に差分を確認すること。
+
+---
+
 ## 💡 備考
 
 * `StartupCommand` は `MinuteTicker.start()` の冒頭で1度だけ明示的に実行される仕組みです。
