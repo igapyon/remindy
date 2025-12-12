@@ -111,3 +111,4 @@ java -jar target/remindy-1.20250805.1-jar-with-dependencies.jar
 * トレイアイコンは `SystemTray` 非対応環境では表示されない場合がありますが、動作自体には影響しません。
 * `reminders.json` や `proverbs.json` は `resources/` に配置し、Maven 実行時はクラスパス経由で読み込まれます。
 * 外部パスの設定には `RemindyConstants.REMINDER_EXTERNAL_PATH` を使用できます。
+* `MinuteTicker` は毎分の定時より約10秒早くコマンドに現在時刻を渡すため、通知／ポップアップは予定時刻の少し前に発火します。

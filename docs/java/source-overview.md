@@ -16,7 +16,7 @@
 - `jp/igapyon/remindy/core/MinuteCommand.java`  
   毎分実行される処理を表すインターフェース。`execute(LocalTime now)` を実装して実際の処理を記述します。
 - `jp/igapyon/remindy/core/MinuteTicker.java`  
-  `Timer` を用いて 00 秒にそろえた 1 分周期を作り、登録された `MinuteCommand` を順次呼び出します。`StartupCommand` だけは起動直後にも即時実行します。
+  `Timer` を用いて 00 秒にそろえた 1 分周期を作り、登録された `MinuteCommand` を順次呼び出します。実際の実行は予定時刻の約10秒前に行い、`StartupCommand` だけは起動直後にも即時実行します。
 
 ## コマンド群（`jp.igapyon.remindy.command`）
 
