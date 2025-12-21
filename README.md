@@ -75,7 +75,7 @@ mvn exec:java
 mvn package
 
 # 実行
-java -jar target/remindy-*-jar-with-dependencies.jar
+java -jar target/remindy-*-shaded.jar
 ```
 
 ## ビルド

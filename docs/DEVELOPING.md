@@ -1,114 +1,80 @@
-# 開発者向け情報
+# Developer Notes
 
-このドキュメントは `remindy` の開発者向けに、プロジェクトの構造やビルド方法について説明します。
+This document describes the project structure, build, and run steps for remindy.
 
----
-
-## 📁 ディレクトリ構造
+## Directory Layout
 
 ```
 remindy/
-├── .settings/      # Eclipseプロジェクト設定（任意）
 ├── src/
 │   ├── main/
 │   │   ├── java/jp/igapyon/remindy/
-│   │   │   ├── Main.java                  # メインエントリポイント
-│   │   │   ├── RemindyConstants.java      # 定数管理クラス
-│   │   │   ├── command/                   # Commandパターンによる機能実装
-│   │   │   │   ├── NotifyCommand.java
-│   │   │   │   ├── PopupCommand.java
-│   │   │   │   ├── StartupCommand.java
-│   │   │   │   ├── PikoMouseCommand.java
-│   │   │   │   └── LogCommand.java
-│   │   │   ├── conv/
-│   │   │   │   └── OutlookCsvToRemindersConv.java
-│   │   │   ├── core/
-│   │   │   │   ├── MinuteTicker.java      # 毎分のイベント駆動
-│   │   │   │   └── MinuteCommand.java     # コマンドインタフェース
-│   │   │   ├── loader/
-│   │   │   │   ├── ReminderLoader.java
-│   │   │   │   └── ProverbLoader.java
-│   │   │   ├── logic/
-│   │   │   │   └── MessageBuilder.java
-│   │   │   ├── ui/
-│   │   │   │   ├── JyuWarningPanel.java   # カスタムポップアップ描画
-│   │   │   │   └── JyuWarningPopup.java   # ポップアップ表示ユーティリティ
-│   │   │   ├── util/
-│   │   │   │   └── TrayIconSetup.java     # トレイアイコン設定
-│   │   │   └── vo/
-│   │   │       └── Reminder.java
-│   └── module-info.java                   # （未使用またはJavaモジュール用）
-│
-├── src/main/resources/
-│   ├── images/
-│   │   └── remindy_icon_32x32.png
-│   ├── input/
-│   │   └── outlook-calendar.csv           # Outlook連携入力用CSV
-│   ├── reminders.json                     # リマインダーリスト
-│   └── proverbs.json                      # 格言リスト
-│
-├── target/                                # Mavenビルド成果物
-├── pom.xml                                # Mavenビルド設定
-├── .classpath                             # Eclipseクラスパス設定
-├── .project                               # Eclipseプロジェクト設定
-├── .gitignore
+│   │   │   ├── Main.java                  # entry point
+│   │   │   ├── RemindyConstants.java      # app constants
+│   │   │   ├── command/                   # feature commands
+│   │   │   ├── conv/                      # Outlook CSV converter
+│   │   │   ├── core/                      # minute ticker framework
+│   │   │   ├── loader/                    # JSON loaders
+│   │   │   ├── logic/                     # message builder
+│   │   │   ├── ui/                        # popup UI
+│   │   │   ├── util/                      # tray icon helper
+│   │   │   └── vo/                        # value objects
+│   └── main/resources/
+│       ├── images/
+│       ├── input/
+│       ├── reminders.json
+│       └── proverbs.json
+├── target/                                # build outputs
+├── pom.xml
 └── README.md
 ```
 
----
+## Build and Run
 
-## 🔧 主要ファイル解説
-
-| ファイル・クラス名                                    | 役割                                                  |
-| -------------------------------------------- | --------------------------------------------------- |
-| `Main.java`                                  | アプリケーションのエントリーポイント。トレイアイコンや `MinuteTicker` の初期化を担当。 |
-| `MinuteTicker.java`                          | 毎分タイミングで `MinuteCommand` 群を順に実行。                    |
-| `StartupCommand.java`                        | 起動時にリマインド予定とバージョン情報をコンソール・ポップアップ・トレイに表示。            |
-| `NotifyCommand.java`                         | 10分刻みと予定時刻で通知メッセージをシステムトレイに表示。                |
-| `PopupCommand.java`                          | 🔔リマインダー時刻と一致した場合にカスタムポップアップを表示。                    |
-| `PikoMouseCommand.java`                      | 毎分マウスを微小移動し、スリープ抑止（お好みで有効化）。                        |
-| `MessageBuilder.java`                        | リマインダーと格言を統合し、メッセージを構築。                             |
-| `ReminderLoader.java` / `ProverbLoader.java` | `reminders.json` / `proverbs.json` の読み込み処理。         |
-| `OutlookCsvToRemindersConv.java`             | Outlook予定表CSV → JSON変換ツール。                          |
-
----
-
-## 🛠 ビルドと実行方法
-
-### 開発中のテスト実行
+### Run from Maven
 
 ```sh
 mvn exec:java
 ```
 
-### 実行可能 JAR の作成
+### Build a runnable JAR
 
 ```sh
 mvn package
 ```
 
-* 出力先: `target/remindy-*-jar-with-dependencies.jar`
+Output: `target/remindy-*-shaded.jar`
 
-### 実行例
+Run example:
 
 ```sh
-java -jar target/remindy-1.20250805.1-jar-with-dependencies.jar
+java -jar target/remindy-1.20250805.1-shaded.jar
 ```
 
----
+## Key Files
 
-## 🔢 バージョン管理のルール
+| File or Class | Role |
+| --- | --- |
+| `Main.java` | Entry point. Initializes tray icon and `MinuteTicker`. |
+| `MinuteTicker.java` | Runs `MinuteCommand` instances every minute. |
+| `StartupCommand.java` | Shows version and upcoming reminders at startup. |
+| `NotifyCommand.java` | Sends tray notifications on schedule. |
+| `PopupCommand.java` | Shows popup when a reminder time matches. |
+| `PikoMouseCommand.java` | Slight mouse move for sleep prevention (optional). |
+| `MessageBuilder.java` | Builds reminder and proverb messages. |
+| `ReminderLoader.java` / `ProverbLoader.java` | Loads `reminders.json` / `proverbs.json`. |
+| `OutlookCsvToRemindersConv.java` | Converts Outlook CSV to reminders JSON. |
 
-- Maven 側 (`pom.xml`): `1.<yyyyMMdd>.<n>` 形式。例: `1.20251212.1`。同じ日に複数リリースする場合は末尾の数字を 2, 3… と増やす。
-- アプリ側 (`RemindyConstants.VERSION`): `<yyyyMMdd><alpha>` 形式。例: `20251212a`。同日の 2 回目は `b`、3 回目は `c` とアルファベットを進める。
-- 2 つの値は文字列自体は異なるが、日付とリリース順は一致させる。作業時は両ファイルを忘れずに更新し、差分を確認すること。
+## Versioning Rules
 
----
+- Maven (`pom.xml`): `1.<yyyyMMdd>.<n>` (example: `1.20251212.1`).
+- App (`RemindyConstants.VERSION`): `<yyyyMMdd><alpha>` (example: `20251212a`).
+- Keep the date and release order aligned between the two.
 
-## 💡 備考
+## Notes
 
-* `StartupCommand` は `MinuteTicker.start()` の冒頭で1度だけ明示的に実行される仕組みです。
-* トレイアイコンは `SystemTray` 非対応環境では表示されない場合がありますが、動作自体には影響しません。
-* `reminders.json` や `proverbs.json` は `resources/` に配置し、Maven 実行時はクラスパス経由で読み込まれます。
-* 外部パスの設定には `RemindyConstants.REMINDER_EXTERNAL_PATH` を使用できます。
-* `MinuteTicker` は毎分の定時より約10秒早くコマンドに現在時刻を渡すため、通知／ポップアップは予定時刻の少し前に発火します。
+- `StartupCommand` runs once at the beginning of `MinuteTicker.start()`.
+- If `SystemTray` is not supported, tray notifications are skipped safely.
+- `reminders.json` and `proverbs.json` are read from the classpath.
+- `RemindyConstants.REMINDER_EXTERNAL_PATH` can override the reminders path.
+- `MinuteTicker` triggers about 10 seconds before the exact minute.
