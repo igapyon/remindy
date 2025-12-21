@@ -6,8 +6,8 @@ Java (AWT) で動作するデスクトップ常駐型のリマインダーです
 
 ## 主な機能
 
-- **定期通知**: 10分刻み（00/10/20/30/40/50分）に現在のリマインド内容と格言をシステム通知します。
-- **時刻指定リマインド**: `reminders.json` に登録した予定の時刻と一致したときに通知します。
+- **定期通知**: 10分刻み（00/10/20/30/40/50分）に現在のリマインド内容と格言をシステム通知します（予定より約10秒早く通知）。
+- **時刻指定リマインド**: `reminders.json` に登録した予定の時刻と一致したときに通知します（予定の約10秒前）。
 - **今後の予定の確認**: 次の予定までの残り時間を表示します。
 - **格言表示**: `proverbs.json` に登録した格言をランダムに表示します。
 - **Outlook 連携**: Outlook からエクスポートした CSV ファイルをリマインダー形式に変換するツール (`OutlookCsvToRemindersConv.java`) を同梱しています。
@@ -75,7 +75,7 @@ mvn exec:java
 mvn package
 
 # 実行
-java -jar target/remindy-*-jar-with-dependencies.jar
+java -jar target/remindy-*-shaded.jar
 ```
 
 ## ビルド
@@ -85,6 +85,13 @@ java -jar target/remindy-*-jar-with-dependencies.jar
 ```sh
 mvn package
 ```
+
+## 追加ドキュメント
+
+- 開発手順や依存関係、TODO などの補足資料は `docs/` ディレクトリにまとめています。
+  - `docs/DEVELOPING.md`: 開発時のセットアップや実行方法
+  - `docs/DEPENDENCIES.md`: 依存ライブラリの一覧
+  - `docs/TODO.md`: 今後のタスクメモ
 
 ## 補足機能（スリープ抑止の補助）
 

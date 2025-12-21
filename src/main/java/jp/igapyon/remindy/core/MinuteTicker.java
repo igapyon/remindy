@@ -33,6 +33,7 @@ import java.util.TimerTask;
  * @author Toshiki Iga
  */
 public class MinuteTicker {
+	private static final int LEAD_SECONDS = 10;
 	private final List<MinuteCommand> commandList = new ArrayList<>();
 
 	/**
@@ -58,10 +59,14 @@ public class MinuteTicker {
 
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime nextMinute = now.plusMinutes(1).withSecond(0).withNano(0);
-		long delay = Duration.between(now, nextMinute).toMillis();
+		LocalDateTime firstRun = nextMinute.minusSeconds(LEAD_SECONDS);
+		if (firstRun.isBefore(now)) {
+			firstRun = firstRun.plusMinutes(1);
+		}
+		long delay = Duration.between(now, firstRun).toMillis();
 
 		// 起動直後に StartupCommand を実行
-		LocalTime currentTime = LocalTime.now();
+		LocalTime currentTime = LocalTime.now().plusSeconds(LEAD_SECONDS);
 		for (MinuteCommand cmd : commandList) {
 			if (cmd.getClass().getSimpleName().equals("StartupCommand")) {
 				try {
@@ -76,7 +81,7 @@ public class MinuteTicker {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				LocalTime now = LocalTime.now();
+				LocalTime now = LocalTime.now().plusSeconds(LEAD_SECONDS);
 				for (MinuteCommand cmd : commandList) {
 					// StartupCommand は除外
 					if (cmd.getClass().getSimpleName().equals("StartupCommand")) {
